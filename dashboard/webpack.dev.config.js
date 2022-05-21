@@ -1,6 +1,7 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -59,6 +60,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      filename: "dashboard.html",
+      title: "Dashboard",
+      description: "Dashboard",
+      template: "src/page-template.hbs",
+    }),
     new ModuleFederationPlugin({
       name: "App",
       remotes: {
