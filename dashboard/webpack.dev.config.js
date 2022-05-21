@@ -2,10 +2,11 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
-    kiwi: "./src/dashboard.js",
+    dashboard: "./src/dashboard.js",
   },
   output: {
     filename: "[name].bundle.js",
@@ -38,7 +39,11 @@ module.exports = {
         },
       },
       {
-        test: /\.txt/,
+        test: /\.(css|scss)$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.txt$/,
         type: "asset/source",
       },
       {
@@ -60,6 +65,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css",
+    }),
     new HtmlWebpackPlugin({
       filename: "dashboard.html",
       title: "Dashboard",

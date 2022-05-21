@@ -78,6 +78,10 @@ module.exports = {
       exposes: {
         "./KiwiPage": "./src/components/kiwi-page/kiwi-page.js",
       },
+      remotes: {
+        ImageCaptionApp:
+          "ImageCaptionApp@https://localhost:9003/remoteEntry.js",
+      },
     }),
   ],
 };

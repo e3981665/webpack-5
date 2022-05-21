@@ -1,24 +1,26 @@
 const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 
 module.exports = {
   entry: {
-    kiwi: "./src/kiwi.js",
+    "image-caption": "./src/image-caption.js",
   },
   output: {
-    filename: "[name].[contenthash].js",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "./dist"),
-    publicPath: "http://localhost:9002/",
+    publicPath: "http://localhost:9003/",
   },
-  mode: "production",
-  optimization: {
-    splitChunks: {
-      chunks: "all",
-      minSize: 10000,
-      automaticNameDelimiter: "_",
+  mode: "development",
+  devServer: {
+    port: 9003,
+    static: {
+      directory: path.resolve(__dirname, "./dist"),
+    },
+    devMiddleware: {
+      index: "image-caption.html",
+      writeToDisk: true,
     },
   },
   module: {
@@ -38,11 +40,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.js$/,
@@ -62,26 +64,19 @@ module.exports = {
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css",
-    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      filename: "kiwi.html",
-      chunks: ["kiwi"],
-      title: "Kiwi",
-      description: "Kiwi",
+      filename: "image-caption.html",
+      chunks: ["image-caption"],
+      title: "Image Caption",
+      description: "Image Caption",
       template: "src/page-template.hbs",
     }),
     new ModuleFederationPlugin({
-      name: "KiwiApp",
+      name: "ImageCaptionApp",
       filename: "remoteEntry.js",
       exposes: {
-        "./KiwiPage": "./src/components/kiwi-page/kiwi-page.js",
-      },
-      remotes: {
-        ImageCaptionApp:
-          "ImageCaptionApp@https://localhost:9003/remoteEntry.js",
+        "./ImageCaption": "./src/components/image-caption/image-caption.js",
       },
     }),
   ],
